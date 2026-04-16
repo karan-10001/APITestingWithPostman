@@ -1,0 +1,52 @@
+{
+  "info": {
+    "_postman_id": "9733d449-382b-4d3d-95d3-a41307492135",
+    "name": "GraphQL_Query",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "53580813",
+    "_collection_link": "https://go.postman.co/collection/53580813-9733d449-382b-4d3d-95d3-a41307492135?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "Qeury",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "graphql",
+          "graphql": {
+            "query": "\r\nquery($characterId : Int!, $episodeId : Int!){\r\n  \r\n  character(characterId: $characterId)\r\n  {\r\n    name\r\n    gender\r\n    status\r\n    id\r\n  }\r\n  location(locationId:8)\r\n  {\r\n    name\r\n    dimension\r\n  }\r\n  episode(episodeId:$episodeId)\r\n  {\r\n    name\r\n    air_date\r\n    episode\r\n  }\r\n  characters(filters:{name :\"Karan\"})\r\n  {\r\n    info{\r\n       count \r\n    }\r\n    result{\r\n      name \r\n    }\r\n  }\r\n  \r\n  episodes(filters: { episode : \"hulu\"})\r\n  {\r\n     result{\r\n      id \r\n      name\r\n      air_date\r\n      \r\n    }\r\n  }\r\n}",
+            "variables": "{\r\n  \"characterId\": 8,\r\n  \"episodeId\": 1\r\n}"
+          }
+        },
+        "url": {
+          "raw": "https://rahulshettyacademy.com/gq/graphql?",
+          "protocol": "https",
+          "host": [
+            "rahulshettyacademy",
+            "com"
+          ],
+          "path": [
+            "gq",
+            "graphql"
+          ],
+          "query": [
+            {
+              "key": "",
+              "value": null
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "mutation",
+      "request": {
+        "method": "GET",
+        "header": []
+      },
+      "response": []
+    }
+  ]
+}

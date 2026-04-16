@@ -1,0 +1,123 @@
+{
+  "info": {
+    "_postman_id": "3ce5c68d-68c0-4011-9989-cdb5f0ffa254",
+    "name": "Soap Services",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "53580813",
+    "_collection_link": "https://go.postman.co/collection/53580813-3ce5c68d-68c0-4011-9989-cdb5f0ffa254?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "NumberToWordConvert",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "\r",
+              "pm.test(\"validate the status code of soap api xml response\", function(){\r",
+              "\r",
+              "     pm.response.to.have.status(200);\r",
+              "\r",
+              "})\r",
+              "\r",
+              "pm.test(\"validate the number into words in response\",()=>{\r",
+              "\r",
+              "     const jsResponse = xml2Json(pm.response.text());\r",
+              "     console.log(jsResponse);\r",
+              "   \r",
+              "     pm.expect(jsResponse[\"soap:Envelope\"][\"soap:Body\"][\"m:NumberToWordsResponse\"]\r",
+              "               [\"m:NumberToWordsResult\"]).to.eql(pm.collectionVariables.get(\"responseNumber\"));\r",
+              "\r",
+              "})\r",
+              "\r",
+              "pm.test(\"validate whether expected text is available in response or not \",()=>{\r",
+              "    pm.expect(pm.response.text()).to.include(pm.collectionVariables.get(\"responseNumber\"));\r",
+              "})\r",
+              ""
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "protocolProfileBehavior": {
+        "disabledSystemHeaders": {
+          "content-type": true,
+          "connection": true,
+          "accept-encoding": true,
+          "accept": true,
+          "user-agent": true
+        }
+      },
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/soap+xml; charset=utf-8",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "<soap12:Envelope xmlns:soap12=\"http://www.w3.org/2003/05/soap-envelope\">\r\n  <soap12:Body>\r\n    <NumberToWords xmlns=\"http://www.dataaccess.com/webservicesserver/\">\r\n      <ubiNum>{{requestNumber}}</ubiNum>\r\n    </NumberToWords>\r\n  </soap12:Body>\r\n</soap12:Envelope>",
+          "options": {
+            "raw": {
+              "language": "xml"
+            }
+          }
+        },
+        "url": {
+          "raw": "https://www.dataaccess.com/webservicesserver/NumberConversion.wso",
+          "protocol": "https",
+          "host": [
+            "www",
+            "dataaccess",
+            "com"
+          ],
+          "path": [
+            "webservicesserver",
+            "NumberConversion.wso"
+          ]
+        }
+      },
+      "response": []
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "packages": {},
+        "requests": {},
+        "exec": [
+          ""
+        ]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "packages": {},
+        "requests": {},
+        "exec": [
+          ""
+        ]
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "requestNumber",
+      "value": ""
+    },
+    {
+      "key": "responseNumber",
+      "value": ""
+    }
+  ]
+}

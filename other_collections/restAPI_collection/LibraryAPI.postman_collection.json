@@ -1,0 +1,332 @@
+{
+  "info": {
+    "_postman_id": "fea453be-7d39-412b-b53f-f1597cfe23c0",
+    "name": "LibraryAPI",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "53580813",
+    "_collection_link": "https://go.postman.co/collection/53580813-fea453be-7d39-412b-b53f-f1597cfe23c0?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "AddBook",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "const response = pm.response.json();\r",
+              "const resJsonData = response;\r",
+              "console.log(response);\r",
+              "console.log(response.ID);\r",
+              "pm.collectionVariables.set(\"bookID\",response.ID);\r",
+              "\r",
+              "pm.test(\"validate the status \", function(){\r",
+              "\r",
+              "    pm.response.to.have.status(200);\r",
+              "\r",
+              "    pm.expect(response).to.have.property(\"Msg\"); \r",
+              "\r",
+              "    pm.expect(response.Msg).to.eql(\"successfully added\"); \r",
+              "    \r",
+              "});\r",
+              "\r",
+              "function generateBookId(){\r",
+              "\r",
+              "   let reqBody = Json.parse(pm.request.body.raw);\r",
+              "   let isbn_Id = reqBody.isbn;\r",
+              "   let aisle_Id = reqBody.aisle;\r",
+              "\r",
+              "   let book_ID= isbn_Id+aisle_Id;\r",
+              "\r",
+              "   return book_ID;\r",
+              "    \r",
+              "}\r",
+              "\r",
+              "function cleanupScript()\r",
+              "{\r",
+              "    pm.collectionVariables.set(\"bookID\",generateBookId());\r",
+              "    pm.execution.setNextRequest(\"DeleteBook\");\r",
+              "\r",
+              "}\r",
+              "\r",
+              "pm.test(\"headers , cookies & response time validation\", ()=>{\r",
+              "\r",
+              "//error handling scenario , like if isbn become duplicate \r",
+              "   try{\r",
+              "    pm.response.to.have.header(\"Content-Type\");\r",
+              "    pm.expect(pm.response.headers.get(\"Content-Type\")).to.eql(\"application/json;charset=UTF-8\");\r",
+              "\r",
+              "    pm.expect(pm.response.responseTime).to.be.below(1200);\r",
+              "\r",
+              "    pm.expect(pm.response.text()).to.include(\"successfully added\");\r",
+              "   }\r",
+              "   catch(err)\r",
+              "   {\r",
+              "       if(resJsonData.msg.includes(\"exists\"))\r",
+              "       {\r",
+              "          cleanupScript();\r",
+              "\r",
+              "       }\r",
+              "   }\r",
+              "});\r",
+              "\r",
+              "pm.test(\"ID logic validation\", function(){\r",
+              "\r",
+              " const isbn_val=pm.collectionVariables.get(\"isbn\");\r",
+              "\r",
+              " const reqeustBodyRaw = pm.request.body.raw;\r",
+              " const reqeustBodyJson = JSON.parse(reqeustBodyRaw);\r",
+              "// const reqeustBodyJson = JSON.parse(pm.request.body.raw);\r",
+              "\r",
+              " const aisle_val= reqeustBodyJson.aisle;\r",
+              " const expectedID= isbn_val +aisle_val;\r",
+              " pm.expect(expectedID).to.eql(response.ID);\r",
+              "\r",
+              "});\r",
+              "\r",
+              ""
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        },
+        {
+          "listen": "prerequest",
+          "script": {
+            "exec": [
+              "\r",
+              "const code = pm.globals.get(\"companyCode\");\r",
+              "const var1 = pm.variables.replaceIn(\"{{$randomInt}}\");\r",
+              "//console.log(code+var1);\r",
+              "const var2= code+var1;\r",
+              "pm.collectionVariables.set(\"isbn\", var2);\r",
+              "\r",
+              "pm.collectionVariables.set(\"book_Name\",pm.iterationData.get(\"BookName\"));\r",
+              "console.log(pm.collectionVariables.get(\"book_Name\"));\r",
+              "pm.collectionVariables.set(\"author\",pm.iterationData.get(\"Author\"));\r",
+              "console.log(pm.collectionVariables.get(\"author\"));\r",
+              "\r",
+              "\r",
+              "\r",
+              ""
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n\"name\":\"{{book_Name}}\",\r\n\"isbn\":\"wert3\",\r\n\"aisle\":\"klsslts231\",\r\n\"author\":\"{{author}}\"\r\n}\r\n",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{base_url}}/Library/Addbook.php",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "Library",
+            "Addbook.php"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "GetBook",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "\r",
+              "const jsonResponse = pm.response.json();\r",
+              "\r",
+              "const expectedSchema= {\r",
+              "\r",
+              "  \"type\": \"array\",\r",
+              "  \"items\": {\r",
+              "    \"type\": \"object\",\r",
+              "    \"properties\": {\r",
+              "      \"name\": {\r",
+              "        \"type\": \"string\"\r",
+              "      },\r",
+              "      \"isbn\": {\r",
+              "        \"type\": \"string\"\r",
+              "      },\r",
+              "      \"aisle\": {\r",
+              "        \"type\": \"string\"\r",
+              "      },\r",
+              "      \"author\": {\r",
+              "        \"type\": \"string\"\r",
+              "      }\r",
+              "    },\r",
+              "    \"required\": [\r",
+              "      \"name\",\r",
+              "      \"isbn\",\r",
+              "      \"aisle\",\r",
+              "      \"author\"\r",
+              "    ]\r",
+              "  }\r",
+              "};\r",
+              "\r",
+              "\r",
+              "pm.test(\"validat the json response it should as it as we send in post request\",()=>{\r",
+              "   \r",
+              "   console.log(jsonResponse);\r",
+              "\r",
+              "   pm.expect( jsonResponse[0].author).to.eql(pm.collectionVariables.get(\"author\"));\r",
+              "\r",
+              "});\r",
+              "\r",
+              "pm.test(\"response json schema validation\" , function(){\r",
+              " \r",
+              "     pm.response.to.have.jsonSchema(expectedSchema);\r",
+              "});\r",
+              ""
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/Library/GetBook.php?ID={{bookID}}",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "Library",
+            "GetBook.php"
+          ],
+          "query": [
+            {
+              "key": "ID",
+              "value": "{{bookID}}"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "DeleteBook",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "\r",
+              "pm.collectionVariables.set(\"flag\",false);\r",
+              "\r",
+              "const jsonResponse = response.json();\r",
+              "\r",
+              "pm.test(\"validate the delete book response status code \",()=>{\r",
+              "\r",
+              "     response.to.have.status(200);\r",
+              "     \r",
+              "     if(flag)\r",
+              "     {\r",
+              "          pm.execution.setNextRequest(\"AddBook\");\r",
+              "     }\r",
+              "})\r",
+              ""
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n\"ID\" : \"{{bookID}}\"\r\n} \r\n",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{base_url}}/Library/DeleteBook.php",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "Library",
+            "DeleteBook.php"
+          ]
+        }
+      },
+      "response": []
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "packages": {},
+        "requests": {},
+        "exec": [
+          ""
+        ]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "packages": {},
+        "requests": {},
+        "exec": [
+          ""
+        ]
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "isbn",
+      "value": ""
+    },
+    {
+      "key": "bookID",
+      "value": ""
+    },
+    {
+      "key": "author",
+      "value": ""
+    },
+    {
+      "key": "book_Name",
+      "value": ""
+    },
+    {
+      "key": "flag",
+      "value": ""
+    }
+  ]
+}

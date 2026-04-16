@@ -1,0 +1,26 @@
+{
+	"info": {
+		"_postman_id": "e1bfd729-20ed-45ea-8256-e85874f2c679",
+		"name": "GraphQL_RSA",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "15901394"
+	},
+	"item": [
+		{
+			"name": "Query",
+			"request": {
+				"method": "GET",
+				"header": []
+			},
+			"response": []
+		},
+		{
+			"name": "Mutations",
+			"request": {
+				"method": "GET",
+				"header": []
+			},
+			"response": []
+		}
+	]
+}
