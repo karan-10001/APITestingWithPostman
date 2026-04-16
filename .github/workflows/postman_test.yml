@@ -20,6 +20,9 @@ jobs:
 
       - name: Install Newman and HTML Reporter
         run: npm install -g newman newman-reporter-htmlextra
+        
+      - name: Ensure Reports folder exists
+        run: mkdir -p Reports
 
       - name: Run Postman Collection
         run: |
